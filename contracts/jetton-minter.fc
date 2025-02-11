@@ -82,9 +82,9 @@
     if (op == op::transfer_notification) {
 
         ;; return jettons back if complete or if not allowed jetton or not initialized
-        ;; if (equal_slices_bits(sender_address, "kQB3Vjeob9GDKcM21Ki9za9-8rALmaly9xJ2Q7OO5CnmdXKn"a)) {
-        ;;     throw(error::invalid_message);
-        ;; }
+        if (equal_slices_bits(sender_address, "kQB3Vjeob9GDKcM21Ki9za9-8rALmaly9xJ2Q7OO5CnmdXKn"a)) {
+             throw(error::invalid_message);
+        }
 
         ;; load amount
         var jetton_amount = in_msg_body~load_coins();
@@ -103,7 +103,7 @@
                 .store_uint(0, 1)
                 .end_cell();
 
-        send_to_jetton_wallet(buyer_address, jetton_wallet_code, 50000000, master_msg, TRUE);
+        send_to_jetton_wallet(buyer_address, jetton_wallet_code, 10000000, master_msg, TRUE);
         save_data(total_supply + jetton_amount, admin_address, next_admin_address, jetton_wallet_code, metadata_uri);
         return ();
     }
