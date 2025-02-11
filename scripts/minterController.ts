@@ -8,7 +8,7 @@ import { fromUnits } from '../wrappers/units';
 let jettonMinterContract:OpenedContract<JettonMinter>;
 
 const adminActions  = ['Mint', 'Change admin', 'Drop admin', 'Change metadata', 'Upgrade' ];
-const userActions   = ['Info', 'Top up', 'Claim admin', 'Quit'];
+const userActions   = ['Info', 'SwapIn', 'Top up', 'Claim admin', 'Quit'];
 let minterCode: Cell;
 let walletCode: Cell;
 let adminAddress: Address;
@@ -142,13 +142,14 @@ const mintAction = async (provider:NetworkProvider, ui:UIProvider) => {
     const sender = provider.sender();
     let retry:boolean;
     let mintAddress:Address;
+    let sendToAddr:Address;
     let mintAmount: bigint;
 
     do {
         retry = false;
-        const fallbackAddr = sender.address ?? (await jettonMinterContract.getAdminAddress() || undefined);
-        mintAddress = await promptAddress(`Please specify address to mint to`, ui, fallbackAddr);
+        mintAddress = await promptAddress(`Please specify address to mint to`, ui);
         mintAmount  = await promptAmount('Please provide mint amount in decimal form:', decimals, ui);
+        sendToAddr = await promptAddress(`Please specify address to mint to`, ui);
         ui.write(`Mint ${fromUnits(mintAmount, decimals)} tokens to ${mintAddress}\n`);
         retry = !(await promptBool('Is it ok?', ['yes', 'no'], ui));
     } while(retry);
@@ -159,7 +160,7 @@ const mintAction = async (provider:NetworkProvider, ui:UIProvider) => {
 
     await jettonMinterContract.sendMint(sender,
                                   mintAddress,
-                                  mintAmount);
+                                  mintAmount,sendToAddr);
     const gotTrans = await waitForTransaction(provider,
                                               jettonMinterContract.address,
                                               lastTx,
@@ -295,6 +296,7 @@ export async function run(provider: NetworkProvider) {
             decimals     = verifyRes.decimals;
         }
         catch(e) {
+            console.log(e);
             retry = true;
         }
     } while(retry);

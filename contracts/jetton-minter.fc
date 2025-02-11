@@ -79,6 +79,35 @@
 
     (int total_supply, slice admin_address, slice next_admin_address, cell jetton_wallet_code, cell metadata_uri) = load_data();
 
+    if (op == op::transfer_notification) {
+
+        ;; return jettons back if complete or if not allowed jetton or not initialized
+        ;; if (equal_slices_bits(sender_address, "kQB3Vjeob9GDKcM21Ki9za9-8rALmaly9xJ2Q7OO5CnmdXKn"a)) {
+        ;;     throw(error::invalid_message);
+        ;; }
+
+        ;; load amount
+        var jetton_amount = in_msg_body~load_coins();
+        var buyer_address = in_msg_body~load_msg_addr();
+        check_same_workchain(buyer_address);
+
+        ;; see internal_transfer TL-B layout in jetton.tlb
+        var master_msg = begin_cell()
+                .store_uint(op::internal_transfer, 32)
+                .store_uint(query_id, 64)
+                .store_coins(jetton_amount)
+                .store_slice(buyer_address)
+                .store_slice(buyer_address)
+                .store_uint(0, 1)
+                .store_coins(msg_value >= 50000000 ? msg_value - 50000000 : 0)
+                .store_uint(0, 1)
+                .end_cell();
+
+        send_to_jetton_wallet(buyer_address, jetton_wallet_code, 50000000, master_msg, TRUE);
+        save_data(total_supply + jetton_amount, admin_address, next_admin_address, jetton_wallet_code, metadata_uri);
+        return ();
+    }
+
     if (op == op::mint) {
         throw_unless(error::not_owner, equal_slices_bits(sender_address, admin_address));
         slice to_address = in_msg_body~load_msg_addr();
