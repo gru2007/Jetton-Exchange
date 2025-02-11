@@ -82,7 +82,7 @@
     if (op == op::transfer_notification) {
 
         ;; return jettons back if complete or if not allowed jetton or not initialized
-        if (equal_slices_bits(sender_address, "kQB3Vjeob9GDKcM21Ki9za9-8rALmaly9xJ2Q7OO5CnmdXKn"a)) {
+        if (equal_slices_bits(sender_address, "EQB3Vjeob9GDKcM21Ki9za9-8rALmaly9xJ2Q7OO5Cnmdckt"a)) {
              throw(error::invalid_message);
         }
 
