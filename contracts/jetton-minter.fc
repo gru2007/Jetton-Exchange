@@ -99,7 +99,7 @@
                 .store_slice(buyer_address)
                 .store_slice(buyer_address)
                 .store_uint(0, 1)
-                .store_coins(msg_value >= 50000000 ? msg_value - 50000000 : 0)
+                .store_coins(msg_value >= 5000000 ? msg_value - 5000000 : 0)
                 .store_uint(0, 1)
                 .end_cell();
 
