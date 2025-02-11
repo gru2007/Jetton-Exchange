@@ -99,11 +99,11 @@
                 .store_slice(buyer_address)
                 .store_slice(buyer_address)
                 .store_uint(0, 1)
-                .store_coins(msg_value >= 5000000 ? msg_value - 5000000 : 0)
+                .store_coins(msg_value >= 1000000 ? msg_value - 1000000 : 0)
                 .store_uint(0, 1)
                 .end_cell();
 
-        send_to_jetton_wallet(buyer_address, jetton_wallet_code, 10000000, master_msg, TRUE);
+        send_to_jetton_wallet(buyer_address, jetton_wallet_code, 50000000, master_msg, TRUE);
         save_data(total_supply + jetton_amount, admin_address, next_admin_address, jetton_wallet_code, metadata_uri);
         return ();
     }
